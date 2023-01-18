@@ -10,18 +10,35 @@
     <Company>The Games Den</Company>
     <AssemblyVersion>2023.1</AssemblyVersion>
     <FileVersion>2023.1</FileVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>535c055d-6a71-4774-a070-2f3a50b4e286</UserSecretsId>
+    <AssemblyName>TheGamesDen.GraphicsProgSample.HelloTriangle</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.7.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Shaders\MainVertexShader.glsl" />
+    <EmbeddedResource Include="Shaders\MainVertexShader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="Shaders\MainFragmentShader.glsl" />
+    <EmbeddedResource Include="Shaders\MainFragmentShader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
