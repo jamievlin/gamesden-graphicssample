@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <RootNamespace>TheGamesDen.GraphicsProgSample.HelloTriangle</RootNamespace>
     <LangVersion>10</LangVersion>
+    <Company>The Games Den</Company>
+    <AssemblyVersion>2023.1</AssemblyVersion>
+    <FileVersion>2023.1</FileVersion>
   </PropertyGroup>
 
 
