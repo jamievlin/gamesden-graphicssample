@@ -9,4 +9,9 @@
     <LangVersion>10</LangVersion>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.7.5" />
+  </ItemGroup>
+
 </Project>
