@@ -40,17 +40,38 @@ public unsafe class HelloTriangleWindow : IDisposable
             GLFW.Terminate();
             throw new ApplicationException("Cannot create GLFW Window!");
         }
-        
-        // Set context to current.
-        // OpenGL uses a "state machine" pattern (in other words, GLFW keeps a global "context" reference)
-        // for all subsequent gl* function calls. We need to set our context (i.e. this._window) as the current one
-        GLFW.MakeContextCurrent(_window);
     }
-    
+
     public bool IsActive => !GLFW.WindowShouldClose(_window);
     
     [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]
     public void PollEvents() => GLFW.PollEvents();
+    
+    /// <summary>
+    /// Set context to current for OpenGL
+    /// </summary>
+    ///
+    /// <remarks>
+    /// OpenGL uses a "state machine" pattern (in other words, GLFW keeps a global "context" reference)
+    /// for all subsequent gl* function calls. We need to set our context (i.e. this._window) as the current one
+    /// </remarks>
+    public void SetAsCurrentContext() => GLFW.MakeContextCurrent(_window);
+    
+    /// <summary>
+    /// Swap the buffer.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// While it may look like when we are calling glDraw* functions directly to the screen, we are (often)
+    /// drawing to a hidden frame buffer. The <see cref="GLFW.SwapBuffers" /> function takes that hidden
+    /// buffer and shows it to the screen. Usually there are 1-2 hidden buffer, in addition to the buffer being
+    /// currently presented.
+    ///
+    /// Note that this is a vast oversimplification of how swap chains work. In DirectX 11/12 or Vulkan, swap chains
+    /// must be explicitly created (In DirectX, this is through IDXGISwapChain*) in which we can specify the number of
+    /// buffers.
+    /// </remarks>
+    public void SwapBuffer() => GLFW.SwapBuffers(_window);
 
     // Dispose interface implementation
     // see https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
