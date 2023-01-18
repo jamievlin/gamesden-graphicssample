@@ -30,6 +30,15 @@ public unsafe class HelloTriangleWindow : IDisposable
             throw new ApplicationException("Cannot initialize GLFW Library!");
         }
         
+        // These tell GLFW to initialize OpenGL Context to version 4.5
+        GLFW.WindowHint(WindowHintInt.ContextVersionMajor, 4);
+        GLFW.WindowHint(WindowHintInt.ContextVersionMinor, 5);
+        
+        // Tell GLFW to use Core profile, which is more restrictive but also allows
+        // RenderDoc debugging.
+        // In addition, Core does not include deprecated functions (e.g. glBegin/glEnd)
+        GLFW.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+
         GLFW.WindowHint(WindowHintBool.Resizable, false);
         
         // Create GLFW Window
