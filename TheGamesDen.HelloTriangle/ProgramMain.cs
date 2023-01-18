@@ -2,6 +2,7 @@
 
 public static class ProgramMain
 {
+    [STAThread]
     private static void Main(string[] args)
     {
         using var window = new HelloTriangleWindow(1366, 768, "The Games Den Hello Triangle");
