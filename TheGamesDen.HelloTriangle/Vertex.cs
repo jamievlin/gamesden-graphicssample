@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace TheGamesDen.GraphicsProgSample.HelloTriangle;
