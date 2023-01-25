@@ -50,7 +50,10 @@ public unsafe class HelloTriangleWindow : IDisposable
             throw new ApplicationException("Cannot create GLFW Window!");
         }
     }
-
+    
+    /// <summary>
+    /// Checks if window is still active
+    /// </summary>
     public bool IsActive => !GLFW.WindowShouldClose(_window);
     
     [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]
@@ -90,7 +93,11 @@ public unsafe class HelloTriangleWindow : IDisposable
         DisposeInternal();
         GC.SuppressFinalize(this);
     }
-
+    
+    /// <summary>
+    /// Internal function to dispose of all resources not managed by .NET garbage collector,
+    /// in this case, GLFW's window handle
+    /// </summary>
     private void DisposeInternal()
     {
         if (_disposed)
