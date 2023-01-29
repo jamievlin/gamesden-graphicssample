@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Reflection;
 
 namespace TheGamesDen.GraphicsProgSample.HelloTriangle;
 
@@ -8,6 +9,8 @@ public class Renderer
 {
     public Renderer(HelloTriangleWindow window)
     {
+        _utils = new Utils(Assembly.GetExecutingAssembly());
+        
         _window = window;
         _window.SetAsCurrentContext();
         
@@ -49,11 +52,11 @@ public class Renderer
         
         GL.AttachShader(
             _mainShaderProgramNumber,
-            Utils.CreateShaderInOpenGl("MainVertexShader.glsl", ShaderType.VertexShader));
+            _utils.CreateShaderInOpenGl("MainVertexShader.glsl", ShaderType.VertexShader));
         
         GL.AttachShader(
             _mainShaderProgramNumber,
-            Utils.CreateShaderInOpenGl("MainFragmentShader.glsl", ShaderType.FragmentShader));
+            _utils.CreateShaderInOpenGl("MainFragmentShader.glsl", ShaderType.FragmentShader));
 
         GL.LinkProgram(_mainShaderProgramNumber);
     }
@@ -147,6 +150,8 @@ public class Renderer
     private int _vertexArrayNumber = 0;
     private int _vertexBufferNumber = 0;
     private int _mainShaderProgramNumber = 0;
+
+    private readonly Utils _utils;
     
     ~Renderer()
     {
