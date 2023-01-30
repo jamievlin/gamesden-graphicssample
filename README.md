@@ -1,5 +1,5 @@
 # The Games Den Workshop Talk
-## "Hello Triangle" graphics sample
+## "Hello Triangle" + "Rotating Cube" graphics sample
 
 This is a sample code for the talk for Graphics Sample created by
 Jamie "flamingsjack" (she/her)
