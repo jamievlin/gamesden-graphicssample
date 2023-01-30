@@ -107,6 +107,9 @@ public sealed class Renderer : GameWindow
     private void LoadUniformBindings()
     {
         _projViewMatrixUnifNumber = GL.GetUniformLocation(_mainShaderProgramNumber, "projViewModelMatrix");
+        _modelInverseTransposeMatrixUnifNumber = GL.GetUniformLocation(
+            _mainShaderProgramNumber, "modelInverseTransposeMatrix");
+
     }
     
     /// <summary>
@@ -250,7 +253,35 @@ public sealed class Renderer : GameWindow
         var modelMatrix = Matrix4.CreateRotationZ(_rotationAngle);
         var uploadMatrix =  modelMatrix * _camera.CreateTransform() * _perspectiveMatrix;
         GL.UniformMatrix4(_projViewMatrixUnifNumber, false, ref uploadMatrix);
-        GL.UniformMatrix4(_projViewMatrixUnifNumber, false, ref uploadMatrix);
+        
+        // The reason we invert-transpose our model matrix is that transformations we apply to the surface itself
+        // including the world position is not the same as that we apply to the normal vector.
+        // 
+        // Rather, we are required to perform an inverse-transpose operation on our transformation matrix to pass
+        // onto the normal vector.
+        
+#region optional_reading
+        // This reading is optional, though might be interesting if you are familiar with linear algebra:
+        // Suppose we have a tangent vector v and a normal vector n. Right now, dot(v,n) = 0.
+        // 
+        // Suppose we have a transformation matrix T. We have to find a matrix Q such that dot(Tv,Qn)=0.
+        // This matrix is not always equal to T (check this!)
+        // 
+        // One result from Linear algebra tells us that for any matrix T and any vector v, w,
+        // dot(Tv, w) = dot(v, T^T w), where T^T is T transposed
+        // Hence, dot(Tv,Qn) = dot(v, T^T Q n).
+        
+        // One way to set Q is to set is so that Q reverses the transformation made by T^T,
+        // hence we can set Q as invert(T^T).
+        
+        // If you are more interested about this, take a look into dual spaces and orthogonality
+        // (and maybe inner product spaces).
+        //
+        // "Linear Algebra: An Introductory Approach" by Charles W. Curtis is an
+        // excellent option (as well as the textbook we used for Math 227...)
+#endregion
+        var inverseTransposeModelMatrix = Matrix4.Transpose(modelMatrix.Inverted());
+        GL.UniformMatrix4(_modelInverseTransposeMatrixUnifNumber, false, ref inverseTransposeModelMatrix);
         
 
         GL.DrawElements(PrimitiveType.Triangles, Cube.CubeIndices.Count, DrawElementsType.UnsignedInt, 0);
@@ -273,4 +304,5 @@ public sealed class Renderer : GameWindow
     
     // Uniforms
     private int _projViewMatrixUnifNumber;
+    private int _modelInverseTransposeMatrixUnifNumber;
 }

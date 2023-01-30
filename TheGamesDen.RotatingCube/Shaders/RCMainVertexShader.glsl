@@ -10,9 +10,11 @@ out vec3 outNormal;
 
 // uniforms
 uniform mat4 projViewModelMatrix;
+uniform mat4 modelInverseTransposeMatrix;
 
 void main()
 {
-    outNormal = vtxInNormal;
+    vec4 transformedNormal = modelInverseTransposeMatrix * vec4(vtxInNormal, 0.0f);
+    outNormal = normalize(transformedNormal.xyz);
     gl_Position = projViewModelMatrix * vec4(vtxInPos, 1.0f);
 }
