@@ -214,6 +214,15 @@ public sealed class Renderer : GameWindow
             LookPosition = (0, 0, 0)
         };
         
+        // This call is important since when we are drawing Triangles - if we only have the "output" target,
+        // OpenGL has no idea if what we are drawing is "behind" what's already drawn or not.
+        
+        // To work around this problem, we maintain another render target - the "depth buffer" which records
+        // the depth of objects drawn. By comparing the depth value in the buffer and the depth of what we are
+        // drawing, we can determine if a triangle is "behind" other previously drawn triangles or not, and if so,
+        // skips the drawing on that pixel. This is how we maintain a "reasonable" picture when drawing objects.
+        GL.Enable(EnableCap.DepthTest);
+        
         GL.ClearColor(Color.Black);
     }
 
