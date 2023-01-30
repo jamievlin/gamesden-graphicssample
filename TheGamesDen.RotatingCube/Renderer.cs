@@ -251,6 +251,14 @@ public sealed class Renderer : GameWindow
         GL.BindVertexArray(_cubeVAONumber);
 
         var modelMatrix = Matrix4.CreateRotationZ(_rotationAngle);
+        
+        // A remark to why the multiplication order is "reversed" compared to the "matrix multiplication" order
+        // in linear algebra:
+        // For some reason, OpenTK treats A * B as BA, if A and B are matrices. Note that this is also how
+        // HLSL + DirectX Math tool kit multiplies matrix by default.
+        
+        // Though, GLSL Uses the "regular" matrix multiplication order where A*B means AB, as well as GLM library
+        // if you program in C++.
         var uploadMatrix =  modelMatrix * _camera.CreateTransform() * _perspectiveMatrix;
         GL.UniformMatrix4(_projViewMatrixUnifNumber, false, ref uploadMatrix);
         
