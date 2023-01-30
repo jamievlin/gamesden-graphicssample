@@ -7,9 +7,14 @@ namespace TheGamesDen.GraphicsProgSample.HelloTriangle;
 /// <summary>
 /// These are utilities functions
 /// </summary>
-public static class Utils
+public class Utils
 {
-    private static readonly Assembly Asm = Assembly.GetExecutingAssembly();
+    public Utils(Assembly? asm = null)
+    {
+        _asm = asm ?? Assembly.GetExecutingAssembly();
+    }
+    
+    private static readonly Assembly Asm = Assembly.GetCallingAssembly();
     
     /// <summary>
     /// Helper function to load shader. Throws <see cref="MissingManifestResourceException"/> if resource cannot be
@@ -17,10 +22,10 @@ public static class Utils
     /// </summary>
     /// <param name="name">Name of the shader to pass to the Resource Reader</param>
     /// <returns>Shader data as text</returns>
-    private static string LoadShaderAsText(string name)
+    private string LoadShaderAsText(string name)
     {
         // We use EmbeddedResource for .NET Core to store and load shaders.
-        using var vertexInputStream = Asm.GetManifestResourceStream($"{Asm.GetName().Name}.Shaders.{name}");
+        using var vertexInputStream = _asm.GetManifestResourceStream($"{_asm.GetName().Name}.Shaders.{name}");
 
         if (vertexInputStream == null)
         {
@@ -39,7 +44,7 @@ public static class Utils
     /// <param name="shaderType">Type of shader to create</param>
     /// <returns>GL Shader Number</returns>
     /// <exception cref="ApplicationException">Throws if shader compilation fails</exception>
-    public static int CreateShaderInOpenGl(string name, ShaderType shaderType)
+    public int CreateShaderInOpenGl(string name, ShaderType shaderType)
     {
         var text = LoadShaderAsText(name);
 
@@ -66,4 +71,6 @@ public static class Utils
 
         return shaderNumber;
     }
+
+    private readonly Assembly _asm;
 }

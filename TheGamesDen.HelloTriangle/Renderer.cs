@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Reflection;
 
 namespace TheGamesDen.GraphicsProgSample.HelloTriangle;
 
@@ -8,6 +9,8 @@ public class Renderer
 {
     public Renderer(HelloTriangleWindow window)
     {
+        _utils = new Utils(Assembly.GetExecutingAssembly());
+        
         _window = window;
         _window.SetAsCurrentContext();
         
@@ -49,11 +52,11 @@ public class Renderer
         
         GL.AttachShader(
             _mainShaderProgramNumber,
-            Utils.CreateShaderInOpenGl("MainVertexShader.glsl", ShaderType.VertexShader));
+            _utils.CreateShaderInOpenGl("MainVertexShader.glsl", ShaderType.VertexShader));
         
         GL.AttachShader(
             _mainShaderProgramNumber,
-            Utils.CreateShaderInOpenGl("MainFragmentShader.glsl", ShaderType.FragmentShader));
+            _utils.CreateShaderInOpenGl("MainFragmentShader.glsl", ShaderType.FragmentShader));
 
         GL.LinkProgram(_mainShaderProgramNumber);
     }
@@ -72,14 +75,17 @@ public class Renderer
     /// </summary>
     private void InitializeVertexInputLayout()
     {
-        var posAttribLocation = GL.GetAttribLocation(_mainShaderProgramNumber, "vtxInPos");
-        var colorAttribLocation = GL.GetAttribLocation(_mainShaderProgramNumber, "vtxInColor");
-
         GL.BindVertexArray(_vertexArrayNumber);
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferNumber);
         
+        // Here, we are binding the number 0 and 1 to "vtxInPos" and "vtxInColor" respectively.
+        // Note that these numbers are arbitrary, which means we can use any number we want (e.g. index 123)
+        // to bind an attribute location
+        GL.BindAttribLocation(_mainShaderProgramNumber, 0, "vtxInPos"); 
+        GL.BindAttribLocation(_mainShaderProgramNumber, 1, "vtxInColor");
+
         GL.VertexAttribPointer(
-            index: posAttribLocation,
+            index: 0,
             size: 2,
             VertexAttribPointerType.Float,
             normalized: false,
@@ -87,7 +93,7 @@ public class Renderer
             offset: 0);
         
         GL.VertexAttribPointer(
-            colorAttribLocation,
+            1,
             4,
             VertexAttribPointerType.Float,
             false,
@@ -95,8 +101,9 @@ public class Renderer
             Vertex.GetColorByteOffset()
         );
         
-        GL.EnableVertexAttribArray(posAttribLocation);
-        GL.EnableVertexAttribArray(colorAttribLocation);
+        
+        GL.EnableVertexAttribArray(0);
+        GL.EnableVertexAttribArray(1);
     }
     
     /// <summary>
@@ -147,6 +154,8 @@ public class Renderer
     private int _vertexArrayNumber = 0;
     private int _vertexBufferNumber = 0;
     private int _mainShaderProgramNumber = 0;
+
+    private readonly Utils _utils;
     
     ~Renderer()
     {
