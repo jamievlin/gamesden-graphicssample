@@ -225,9 +225,17 @@ public sealed class Renderer : GameWindow
         
         GL.ClearColor(Color.Black);
     }
-
+    
+    /// <summary>
+    /// Called every frame before the frame draw.
+    /// </summary>
+    /// <param name="e">Event arguments - also contains the delta time value in seconds.</param>
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
+        // Here, delta means how much time has elapsed since the last time this method was called.
+        // We can use the delta time (e.Time value) to determine how much to change our state - in this case,
+        // the rotation angle.
+        _rotationAngle = (_rotationAngle + ((float) e.Time * 0.5f)) % MathHelper.TwoPi;
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -239,7 +247,8 @@ public sealed class Renderer : GameWindow
 
         GL.BindVertexArray(_cubeVAONumber);
 
-        var uploadMatrix =  _camera.CreateTransform() * _perspectiveMatrix;
+        var modelMatrix = Matrix4.CreateRotationZ(_rotationAngle);
+        var uploadMatrix =  modelMatrix * _camera.CreateTransform() * _perspectiveMatrix;
         GL.UniformMatrix4(_projViewMatrixUnifNumber, false, ref uploadMatrix);
         GL.UniformMatrix4(_projViewMatrixUnifNumber, false, ref uploadMatrix);
         
@@ -259,7 +268,8 @@ public sealed class Renderer : GameWindow
     
     // Transformations
     private Camera _camera;
-    private Matrix4 _perspectiveMatrix;
+    private readonly Matrix4 _perspectiveMatrix;
+    private float _rotationAngle = 0;
     
     // Uniforms
     private int _projViewMatrixUnifNumber;
